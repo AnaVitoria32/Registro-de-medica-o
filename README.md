@@ -2,8 +2,7 @@
 
 # Manual do Usuário
 ## COMO UTILIZAR ##
- .O sistema iniciará com um menu para o usuário escolher entre as opções de adicionar o medicamento, tendo que escolher entre o comum e controlado, nesta parte os dados como nome do paciente, nome do remédio, horário em que foi ministrada a última dose e quanto tempo é de intervalo entre elas. 
- .A segunda opção é reescrever o horário do medicamento, neste caso a pessoa deve escolher entre remédio comum e controlado, assim, conseguem recalcular o horário caso tenham passado ou não tenham informado no momento de adicionar.
- .A terceira opção é a de calcular o horário da próxima dose, neste caso, o usuário escolhe o tipo de medicamento e os dados são enviados para o método que soma o último horário da dose com o tempo de intervalo entre uma e outra. Assim, retorna a informação do próximo horário para o usuário.
- .A quarta opção mostra os dados dos medicaemntos que o usuário escolher, neste caso, deve decidir se quer ver apenas os medicamentos comuns, controlados ou a lista com todos eles. Assim, todos os dados cadastrados anteriormente serão mostrados.
- .Por fim, temos o sair do sistema, neste caso, o usuário deve ter suprido todas as suas necessidades e o sistema é encerrado.
+Como o sistema foi atualizado, agora contendo interface gráfica, suas funcionalidades devem ser descritas novamente.
+.Primeiramente, quando o usuário iniciar o programa terá uma tela com um menu, nele será visto as três funcionalidades disponíveis. Cadastrar medicamento comum, cadastrar medicamento controlado e ver os horários dos medicamentos. O usuário deve escolher uma das ações.
+.Quando o usuário clicar na funcionalidade escolhida, uma nova página irá abrir, por exemplo, tanto o cadastro de medicamentos comum quanto controlado vão abriar páginas(ambas separadas) para que o medicamento seja cadastrado, será necessário colocar todas as informações necessárias e clicar no botão salvar. Quando for salvo, os campos ficarão em branco.
+.Caso o usuário clique nos horários, uma tabela com todos os medicamentos, controlados e comuns, aparecerão. Ambos apresentarão apenas o nome do medicamento e seu horário da próxima dose, para ver as demais informações a pessoa deve clicar no remédio desejado, neste momento uma página com as informações e dois botões(excluir e atualizar) irão aparecer. Se o usuário desejar, poderá atualizar informações ou excluir tudo que estiver nos dados do medicamento.

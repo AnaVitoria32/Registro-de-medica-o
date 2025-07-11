@@ -14,13 +14,16 @@ import java.time.LocalTime;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 public class TabelaHorarios extends javax.swing.JFrame {
 
     private DefaultTableModel modelo;
     public TabelaHorarios() {
         initComponents();
         
-        modelo = new DefaultTableModel(new String[]{"ID", "Nome", "Próximo Horário"}, 0);
+        modelo = new DefaultTableModel(new String[]{"Nome", "Próximo Horário"}, 0);
         jTable1.setModel(modelo);
         
         carregarDados();
@@ -30,12 +33,24 @@ public class TabelaHorarios extends javax.swing.JFrame {
                 if (e.getClickCount() == 2) {
                     int linha = jTable1.getSelectedRow();
                     if (linha != -1) {
-                        int id = (int) modelo.getValueAt(linha, 0);
-                        Medicamento medicamento = buscarMedicamentoPorId(id);
+                        String nomeMedicamento = (String) modelo.getValueAt(linha, 0);
+                        Medicamento medicamento = buscarMedicamentoPorNome(nomeMedicamento);
+
                         if (medicamento instanceof MedicamentoComum) {
                             new DetalhesComumFrame((MedicamentoComum) medicamento).setVisible(true);
-                        }else if (medicamento instanceof MedicamentoControlado) {
-                            new DetalhesControladoFrame((MedicamentoControlado) medicamento).setVisible(true);
+                            try {
+                              Connection conn = ConexaoBD.conectar();
+                              String sql = "DELETE FROM medicamento_comum WHERE nome_medicamento = ?";
+                              PreparedStatement stmt = conn.prepareStatement(sql);
+                              stmt.setString(1, nomeMedicamento);
+                              stmt.executeUpdate();
+                            } catch (Exception ex) {
+                               JOptionPane.showMessageDialog(null, "Erro ao excluir: " + ex.getMessage());
+                            }
+                        }else{
+                            if (medicamento instanceof MedicamentoControlado) {
+                              new DetalhesControladoFrame((MedicamentoControlado) medicamento).setVisible(true);
+                            }
                         }
                     }
                 }
@@ -54,6 +69,16 @@ public class TabelaHorarios extends javax.swing.JFrame {
             });
         }
     }
+    
+    private Medicamento buscarMedicamentoPorNome(String nomeMedicamento) {
+    for (Medicamento m : DadosApp.carregarTodosMedicamentosBanco()) {
+        if (m.getNomeMedicamento().equalsIgnoreCase(nomeMedicamento)) {
+            return m;
+        }
+    }
+    return null;
+}
+
     
     
 

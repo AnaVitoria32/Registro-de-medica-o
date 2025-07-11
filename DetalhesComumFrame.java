@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -259,11 +261,43 @@ public class DetalhesComumFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir?", "Confirmação", JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
+        try (Connection conn = ConexaoBD.conectar()) {
+            String sql = "DELETE FROM medicamento_comum WHERE nome_medicamento = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, medicamento.getNomeMedicamento()); // Você precisa ter essa variável como atributo do frame
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Medicamento excluído com sucesso!");
+            dispose(); // Fecha a janela atual
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir: " + ex.getMessage());
+        }
+    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+        try (Connection conn = ConexaoBD.conectar()) {
+           String sql = "UPDATE medicamento_comum SET dosagem = ?, ultima_dose = ?, frequencia = ?, duracao = ? WHERE nome_medicamento = ?";
+           PreparedStatement stmt = conn.prepareStatement(sql);
+
+           String novaDosagem = jTextField3.getText();
+           LocalTime novaUltimaDose = LocalTime.parse(jTextField6.getText());
+           int novaFrequencia = Integer.parseInt(jTextField4.getText());
+           int novaDuracao = Integer.parseInt(jTextField5.getText());
+
+           stmt.setString(1, novaDosagem);
+           stmt.setTime(2, java.sql.Time.valueOf(novaUltimaDose));
+           stmt.setInt(3, novaFrequencia);
+           stmt.setInt(4, novaDuracao);
+           stmt.setString(5, medicamento.getNomeMedicamento());
+
+           stmt.executeUpdate();
+           JOptionPane.showMessageDialog(this, "Medicamento atualizado com sucesso!");
+           dispose(); // Fecha a janela
+        } catch (Exception e) {
+          JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + e.getMessage());
+        }
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**

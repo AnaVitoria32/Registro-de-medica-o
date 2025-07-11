@@ -108,7 +108,7 @@ public class CadastroMedicamento extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        TelaHorários tela = new TelaHorários();
+        TabelaHorarios tela = new TabelaHorarios();
         tela.setLocationRelativeTo(null);
         tela.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed

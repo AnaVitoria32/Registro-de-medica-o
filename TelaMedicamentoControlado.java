@@ -5,9 +5,12 @@
 package aplicacao_medicamentos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -161,6 +164,13 @@ public class TelaMedicamentoControlado extends javax.swing.JFrame {
             int frequencia=Integer.parseInt(jTextField4.getText());
             int duracao=Integer.parseInt(jTextField5.getText());
             
+            System.out.println("nomePaciente: " + nomePaciente);
+            System.out.println("nomeMedicamento: " + nomeMedicamento);
+            System.out.println("dosagem: " + dosagem);
+            System.out.println("ultimaDose: " + ultimaDose);
+            System.out.println("frequencia: " + frequencia);
+            System.out.println("duracao: " + duracao);
+            
 
             //Vai guardar as informações.
             MedicamentoControlado med=new MedicamentoControlado(nomePaciente, nomeMedicamento, dosagem,ultimaDose,frequencia, duracao);
@@ -168,6 +178,16 @@ public class TelaMedicamentoControlado extends javax.swing.JFrame {
             
             //Conexão com o banco de dados. 
             Connection conn=ConexaoBD.conectar();
+            if (conn == null) {
+              JOptionPane.showMessageDialog(this, "Erro: Conexão com o banco falhou.");
+              return;
+            }
+            Statement stmtInfo = conn.createStatement();
+            ResultSet rs = stmtInfo.executeQuery("SELECT DATABASE()");
+            if (rs.next()) {
+             System.out.println("📢 Banco conectado: " + rs.getString(1));
+            }
+            conn.setAutoCommit(false);
             String sql ="INSERT INTO medicamento_controlado(nome_paciente, nome_medicamento, dosagem, ultima_dose, frequencia, duracao) VALUES(?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, nomePaciente);
@@ -177,6 +197,9 @@ public class TelaMedicamentoControlado extends javax.swing.JFrame {
             stmt.setInt(5, frequencia);
             stmt.setInt(6, duracao);
             stmt.executeUpdate();
+            conn.commit();
+            
+            stmt.close();
             conn.close();
             
             JOptionPane.showMessageDialog(this, "O medicamento controlado foi registrado com sucesso!");

@@ -9,6 +9,8 @@ import java.time.LocalTime;
 import java.sql.PreparedStatement;
 import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -52,6 +54,12 @@ public class TelaMedicamentoComum extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Nome Paciente:");
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Nome Medicamento:");
 
@@ -165,10 +173,27 @@ public class TelaMedicamentoComum extends javax.swing.JFrame {
             int frequencia=Integer.parseInt(jTextField4.getText());
             int duracao=Integer.parseInt(jTextField5.getText());
             
+            System.out.println("nomePaciente: " + nomePaciente);
+            System.out.println("nomeMedicamento: " + nomeMedicamento);
+            System.out.println("dosagem: " + dosagem);
+            System.out.println("ultimaDose: " + ultimaDose);
+            System.out.println("frequencia: " + frequencia);
+            System.out.println("duracao: " + duracao);
+            
             MedicamentoComum medi=new MedicamentoComum(nomePaciente, nomeMedicamento, dosagem, ultimaDose, frequencia, duracao);
             DadosApp.listaTodosMedicamentos.add(medi);
             
             Connection conn=ConexaoBD.conectar();
+            if (conn == null) {
+              JOptionPane.showMessageDialog(this, "Erro: Conexão com o banco falhou.");
+              return;
+            }
+            Statement stmtInfo = conn.createStatement();
+            ResultSet rs = stmtInfo.executeQuery("SELECT DATABASE()");
+            if (rs.next()) {
+             System.out.println("📢 Banco conectado: " + rs.getString(1));
+            }
+            conn.setAutoCommit(false);
             String sql="INSERT INTO medicamento_comum(nome_paciente, nome_medicamento, dosagem, ultima_dose,frequencia, duracao) VALUES(?,?,?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, nomePaciente);
@@ -178,9 +203,12 @@ public class TelaMedicamentoComum extends javax.swing.JFrame {
             stmt.setInt(5, frequencia);
             stmt.setInt(6, duracao);
             stmt.executeUpdate( );
+            conn.commit();
+            
+            stmt.close();
             conn.close( );
             
-            JOptionPane.showMessageDialog(this, "O medicamento controlado foi registrado com sucesso!");
+            JOptionPane.showMessageDialog(this, "O medicamento comum foi registrado com sucesso!");
             // Vai fazer a limpeza dos campos quando as informações forem salvas.
             jTextField1.setText("");
             jTextField2.setText("");
@@ -189,6 +217,7 @@ public class TelaMedicamentoComum extends javax.swing.JFrame {
             jTextField5.setText("");
             jTextField1.requestFocus();
         }catch(DateTimeParseException e){
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "O horário informado está incorreto, tente no formato HH:mm. Exemplo 18:30.");
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(this, "A frequência e duração devem ser em formato inteiro, sem pontos ou vírgulas(, ou .)");
@@ -200,6 +229,10 @@ public class TelaMedicamentoComum extends javax.swing.JFrame {
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
